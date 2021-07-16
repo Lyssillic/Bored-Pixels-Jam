@@ -4,20 +4,34 @@ using UnityEngine;
 
 public class ChangeSprite : MonoBehaviour
 {
-
-    public Sprite[] lifeSprites;
-    public int index = 0; 
+    public float clickResistance = .4f;
+    Sprite[] lifeSprites;
+    int index = 0; 
 
     void Awake()
     {
         lifeSprites = Resources.LoadAll<Sprite>("Sprites/Life");
+        StartCoroutine(DepleteHeart());
+    }
+
+    public IEnumerator DepleteHeart()
+    {
+        while (true)
+        {
+            if (index != 0)
+            {
+                index--;
+            }
+            gameObject.GetComponent<SpriteRenderer>().sprite = lifeSprites[index];
+            yield return new WaitForSeconds(clickResistance);
+        }
     }
 
     private void OnMouseDown()
     {
-        if (index == lifeSprites.Length - 1)
+        if (index == lifeSprites.Length - 2)
         {
-            index = 0;
+            Destroy(gameObject);
         }
         else
         {
@@ -25,6 +39,4 @@ public class ChangeSprite : MonoBehaviour
         }
         gameObject.GetComponent<SpriteRenderer>().sprite = lifeSprites[index];
     }
-
-
 }
